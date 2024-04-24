@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="20dp"
+    tools:context=".ui.update.UpdateFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ada update nih.."
+        android:fontFamily="@font/nunito_bold"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update aplikasimu ke versi terbaru untuk menikmati fitur baru dan beberapa perbaikan. Download sekarang?"
+        android:fontFamily="@font/nunito_regular"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llc_container_not_force"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginTop="20dp"
+        android:weightSum="1">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nanti"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Nanti saja"
+            android:layout_weight=".5"
+            android:fontFamily="@font/nunito_semi_bold"
+            app:backgroundTint="@color/white"
+            android:textColor="@color/colorPrimary"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorPrimary"
+            android:layout_marginEnd="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_download_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Download"
+            android:layout_weight=".5"
+            android:fontFamily="@font/nunito_semi_bold"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:layout_marginStart="8dp"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llc_container_force"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginTop="20dp"
+        android:weightSum="1">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_download_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Download"
+            android:layout_weight=".5"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/nunito_semi_bold"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/white"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.appcompat.widget.LinearLayoutCompat>

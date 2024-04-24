@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0A2E5A</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="warning">#ffcc00</color>
+<!--    <color name="colorSecondary">#1ba0e2</color>-->
+    <color name="gray">#D3D3D3</color>
+    <color name="gray300">#E0E0E0</color>
+    <color name="gray600">#757575</color>
+    <color name="textShadow">#7F000000</color>
+
+    <color name="hd1">#B6D7A8</color>
+    <color name="hd2">#E69138</color>
+    <color name="hd3">#CC4125</color>
+</resources>

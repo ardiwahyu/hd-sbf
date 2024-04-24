@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.HDSBF" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorSwitchThumbNormal">@color/gray300</item>
+        <item name="android:colorForeground">@color/gray600</item>
+    </style>
+
+    <style name="Theme.HDSBF" parent="Base.Theme.HDSBF" />
+</resources>

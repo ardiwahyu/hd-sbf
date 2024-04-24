@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:padding="20dp"
+    android:orientation="vertical"
+    tools:context=".ui.update.DownloadFragment">
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Downloading Update.."
+        android:fontFamily="@font/nunito_bold"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+
+    <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
+        android:id="@+id/pb_progress"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        app:rcProgressColor="#5CB85C"
+        app:rcBackgroundColor="#0A000000"
+        app:rcMax="100"
+        app:rcAnimationEnable="true"
+        app:rcBackgroundPadding="8dp"
+        android:layout_marginBottom="20dp"/>
+</androidx.appcompat.widget.LinearLayoutCompat>
