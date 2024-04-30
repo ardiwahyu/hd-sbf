@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bm.hdsbf.data.local.db.entities.ScheduleVo
-import com.bm.hdsbf.data.remote.Resource
+import com.bm.hdsbf.data.remote.state.ResourceState
 import com.bm.hdsbf.data.repository.schedule.ScheduleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -28,9 +28,9 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             scheduleRepository.getDataCount().collect {
                 when (it) {
-                    is Resource.OnLoading -> _loading.postValue(it.isLoading)
-                    is Resource.OnError -> _error.postValue(it.message)
-                    is Resource.OnSuccess -> _dataCount.postValue(it.data)
+                    is ResourceState.OnLoading -> _loading.postValue(it.isLoading)
+                    is ResourceState.OnError -> _error.postValue(it.message)
+                    is ResourceState.OnSuccess -> _dataCount.postValue(it.data)
                 }
             }
         }
@@ -43,9 +43,9 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             scheduleRepository.getScheduleByDate(month, date).collect {
                 when (it) {
-                    is Resource.OnLoading -> _loading.postValue(it.isLoading)
-                    is Resource.OnError -> _error.postValue(it.message)
-                    is Resource.OnSuccess -> _listSchedule.postValue(it.data)
+                    is ResourceState.OnLoading -> _loading.postValue(it.isLoading)
+                    is ResourceState.OnError -> _error.postValue(it.message)
+                    is ResourceState.OnSuccess -> _listSchedule.postValue(it.data)
                 }
             }
         }

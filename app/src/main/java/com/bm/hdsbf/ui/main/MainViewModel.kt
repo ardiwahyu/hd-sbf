@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bm.hdsbf.data.remote.Resource
+import com.bm.hdsbf.data.remote.state.ResourceState
 import com.bm.hdsbf.data.repository.google.GoogleRepository
 import com.bm.hdsbf.data.repository.schedule.ScheduleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,9 +29,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             scheduleRepository.getAllData().collect {
                 when (it) {
-                    is Resource.OnLoading -> _loadingSchedule.postValue(it.isLoading)
-                    is Resource.OnError -> _error.postValue(it.message)
-                    is Resource.OnSuccess -> _progress.postValue(it.data)
+                    is ResourceState.OnLoading -> _loadingSchedule.postValue(it.isLoading)
+                    is ResourceState.OnError -> _error.postValue(it.message)
+                    is ResourceState.OnSuccess -> _progress.postValue(it.data)
                 }
             }
         }
@@ -47,9 +47,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             googleRepository.getLastUpdateApp().collect {
                 when (it) {
-                    is Resource.OnLoading -> _loadingUpdate.postValue(it.isLoading)
-                    is Resource.OnError -> _error.postValue(it.message)
-                    is Resource.OnSuccess -> _forceUpdate.postValue(it.data)
+                    is ResourceState.OnLoading -> _loadingUpdate.postValue(it.isLoading)
+                    is ResourceState.OnError -> _error.postValue(it.message)
+                    is ResourceState.OnSuccess -> _forceUpdate.postValue(it.data)
                 }
             }
         }

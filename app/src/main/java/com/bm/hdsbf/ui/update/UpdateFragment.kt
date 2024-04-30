@@ -10,12 +10,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UpdateFragment(
-    private val forceUpdate: Boolean
-) : BottomSheetDialogFragment() {
+class UpdateFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentUpdateBinding? = null
     private val binding get() = _binding!!
 
+    var forceUpdate: Boolean = false
     var onContinue: (() -> Unit)? = null
     var onDownload: (() -> Unit)? = null
 
