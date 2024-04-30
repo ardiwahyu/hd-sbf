@@ -48,8 +48,8 @@ class NotificationManager @Inject constructor(@ApplicationContext private val co
 
     private fun scheduleTomorrow() {
         val alarmTime = Calendar.getInstance()
-        alarmTime.set(Calendar.HOUR_OF_DAY, 11)
-        alarmTime.set(Calendar.MINUTE, 24)
+        alarmTime.set(Calendar.HOUR_OF_DAY, 18)
+        alarmTime.set(Calendar.MINUTE, 0)
         alarmTime.set(Calendar.SECOND, 0)
 
         var longDelay = (alarmTime.timeInMillis - System.currentTimeMillis())
