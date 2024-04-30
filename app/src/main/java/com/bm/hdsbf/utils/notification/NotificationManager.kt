@@ -4,6 +4,7 @@ import android.content.Context
 import android.icu.util.Calendar
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -34,16 +35,7 @@ class NotificationManager @Inject constructor(@ApplicationContext private val co
         alarmTime.set(Calendar.HOUR_OF_DAY, 3)
         alarmTime.set(Calendar.MINUTE, 0)
         alarmTime.set(Calendar.SECOND, 0)
-
-        var longDelay = (alarmTime.timeInMillis - System.currentTimeMillis())
-        if (longDelay < 0) longDelay = 24*60*60*1000 - abs(longDelay)
-        val worker = PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.DAYS)
-            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-            .setInputData(workDataOf("time" to Time.NOW.name))
-            .setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
-            .setInitialDelay(longDelay, TimeUnit.MILLISECONDS)
-            .build()
-        WorkManager.getInstance(context).enqueue(worker)
+        startWorker(alarmTime, Time.NOW)
     }
 
     private fun scheduleTomorrow() {
@@ -51,15 +43,23 @@ class NotificationManager @Inject constructor(@ApplicationContext private val co
         alarmTime.set(Calendar.HOUR_OF_DAY, 18)
         alarmTime.set(Calendar.MINUTE, 0)
         alarmTime.set(Calendar.SECOND, 0)
+        startWorker(alarmTime, Time.TOMORROW)
+    }
 
-        var longDelay = (alarmTime.timeInMillis - System.currentTimeMillis())
+    private fun startWorker(alarmTime: Calendar, time: Time) {
+        var longDelay = alarmTime.timeInMillis - System.currentTimeMillis()
         if (longDelay < 0) longDelay = 24*60*60*1000 - abs(longDelay)
         val worker = PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.DAYS)
             .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-            .setInputData(workDataOf("time" to Time.TOMORROW.name))
+            .setInputData(workDataOf("time" to time.name))
+            .addTag("WORKER_${time.name.uppercase()}")
             .setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
             .setInitialDelay(longDelay, TimeUnit.MILLISECONDS)
             .build()
-        WorkManager.getInstance(context).enqueue(worker)
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "WORKER_${time.name.uppercase()}",
+            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+            worker
+        )
     }
 }
