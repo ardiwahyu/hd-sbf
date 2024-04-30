@@ -1,11 +1,9 @@
 package com.bm.hdsbf.ui.update
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bm.hdsbf.R
 import com.bm.hdsbf.databinding.FragmentUpdateBinding
 import com.bm.hdsbf.utils.ViewUtil.setVisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

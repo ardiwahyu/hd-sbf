@@ -5,13 +5,11 @@ import com.bm.hdsbf.data.local.db.entities.ScheduleVo
 import com.bm.hdsbf.data.remote.Resource
 import com.bm.hdsbf.data.remote.service.GoogleDriveService
 import com.bm.hdsbf.data.remote.service.GoogleSheetService
-import com.bm.hdsbf.utils.CalendarUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
