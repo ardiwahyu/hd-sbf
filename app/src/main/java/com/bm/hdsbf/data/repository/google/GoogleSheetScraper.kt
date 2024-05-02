@@ -1,5 +1,6 @@
 package com.bm.hdsbf.data.repository.google
 
+import com.bm.hdsbf.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 class GoogleSheetScraper @Inject constructor() {
     companion object {
-        private const val URL = "https://docs.google.com/spreadsheets/d/1ATDJHw0ACRLS108MgVFIId568bBCwvM7J2yX67zWHiY/edit#gid=63351175"
+        private const val URL = "https://docs.google.com/spreadsheets/d/${BuildConfig.SPREADSHEET_ID}/edit"
     }
     private val df = SimpleDateFormat("MMMM yyyy", Locale("ID"))
 
