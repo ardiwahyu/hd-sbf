@@ -7,14 +7,11 @@ import com.bm.hdsbf.data.remote.state.ResourceState
 import com.bm.hdsbf.data.repository.google.GoogleRepository
 import com.bm.hdsbf.data.repository.google.GoogleSheetScraper
 import com.bm.hdsbf.ui.setting.ShowSetting
-import com.bm.hdsbf.utils.CalendarUtil.displayName
 import com.bm.hdsbf.utils.CalendarUtil.getMonthNowAndAfter
-import com.kizitonwose.calendar.core.yearMonth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import java.time.LocalDate
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -118,26 +115,6 @@ class ScheduleRepository @Inject constructor(
                 emit(ResourceState.OnError(e.localizedMessage?.toString() ?: ""))
             } finally {
                 emit(ResourceState.OnLoading(false))
-            }
-        }.flowOn(Dispatchers.IO)
-    }
-
-    fun checkSchedule(date: LocalDate): Flow<ScheduleVo?> {
-        return flow {
-            try {
-                getAllData().collect { if (it is ResourceState.OnSuccess) {
-                    if (it.data == 100 ) {
-                        val day = date.dayOfMonth
-                        val month = date.yearMonth.displayName()
-                        val name = preferenceClass.getName()!!
-                        val listSchedule = scheduleDao.getScheduleByDateAndName(month, day, name)
-                        if (listSchedule.isNotEmpty()) {
-                            emit(listSchedule.first())
-                        } else emit(null)
-                    }
-                } }
-            } catch (e: Exception) {
-                emit(null)
             }
         }.flowOn(Dispatchers.IO)
     }

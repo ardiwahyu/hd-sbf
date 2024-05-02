@@ -5,14 +5,14 @@ import android.content.Intent
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.bm.hdsbf.data.repository.schedule.ScheduleRepository
+import com.bm.hdsbf.data.repository.worker.WorkerRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.time.LocalDate
 
 @HiltWorker
 class NotificationWorker @AssistedInject constructor(
-    private val scheduleRepository: ScheduleRepository,
+    private val workerRepository: WorkerRepository,
     @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters
 ): CoroutineWorker(context, workerParameters) {
@@ -23,7 +23,7 @@ class NotificationWorker @AssistedInject constructor(
         if (time == NotificationManager.Time.TOMORROW.name) {
             localDate = localDate.plusDays(1)
         }
-        scheduleRepository.checkSchedule(localDate).collect {
+        workerRepository.checkSchedule(localDate).collect {
             if (it != null) {
                 val title = if (time == NotificationManager.Time.NOW.name) {
                     "Hari ini kamu Helpdesk"
