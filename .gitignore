@@ -9,3 +9,5 @@
 .cxx
 local.properties
 secret.properties
+keystore.jks
+app/release
