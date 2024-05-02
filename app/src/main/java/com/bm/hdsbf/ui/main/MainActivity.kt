@@ -1,22 +1,18 @@
 package com.bm.hdsbf.ui.main
 
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bm.hdsbf.BuildConfig
 import com.bm.hdsbf.R
 import com.bm.hdsbf.databinding.ActivityMainBinding
 import com.bm.hdsbf.ui.schedule.ScheduleActivity
-import com.bm.hdsbf.ui.update.DownloadFragment
-import com.bm.hdsbf.ui.update.InstallFragment
 import com.bm.hdsbf.ui.update.UpdateFragment
 import com.bm.hdsbf.utils.ViewUtil.setGone
 import com.bm.hdsbf.utils.ViewUtil.setVisible
@@ -29,12 +25,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel by viewModels<MainViewModel>()
     private val updateDialog by lazy { UpdateFragment() }
-    private val downloadDialog by lazy { DownloadFragment() }
-    private val installDialog by lazy { InstallFragment() }
-    private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        if (it) download()
-        else showShortToast("Ijin penyimpanan ditolak")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,25 +79,13 @@ class MainActivity : AppCompatActivity() {
         updateDialog.isCancelable = false
         updateDialog.onContinue = { viewModel.getAllData() }
         updateDialog.onDownload = {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
-                checkSelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-                permissionLauncher.launch(WRITE_EXTERNAL_STORAGE)
-            } else { download() }
+            val url = "https://drive.google.com/file/d/${BuildConfig.APP_ID}/view?usp=sharing"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
         }
         updateDialog.show(supportFragmentManager, null)
-    }
-
-    private fun download() {
-        downloadDialog.isCancelable = false
-        downloadDialog.onError = {
-            showShortToast(it)
-            viewModel.getAllData()
-        }
-        downloadDialog.onSuccess = {
-            installDialog.isCancelable = false
-            installDialog.fileName = it
-            installDialog.show(supportFragmentManager, null)
-        }
-        downloadDialog.show(supportFragmentManager, null)
     }
 }

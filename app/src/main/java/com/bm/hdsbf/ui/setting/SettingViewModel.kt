@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bm.hdsbf.data.remote.state.ResourceState
+import com.bm.hdsbf.data.remote.Resource
 import com.bm.hdsbf.data.repository.schedule.ScheduleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -27,9 +27,9 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch {
             scheduleRepository.getName(month).collect {
                 when (it) {
-                    is ResourceState.OnLoading -> _loading.postValue(it.isLoading)
-                    is ResourceState.OnError -> _error.postValue(it.message)
-                    is ResourceState.OnSuccess -> _listName.postValue(it.data)
+                    is Resource.OnLoading -> _loading.postValue(it.isLoading)
+                    is Resource.OnError -> _error.postValue(it.message)
+                    is Resource.OnSuccess -> _listName.postValue(it.data)
                 }
             }
         }

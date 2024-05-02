@@ -3,7 +3,7 @@ package com.bm.hdsbf.data.repository.schedule
 import com.bm.hdsbf.data.local.db.dao.ScheduleDao
 import com.bm.hdsbf.data.local.db.entities.ScheduleVo
 import com.bm.hdsbf.data.local.sp.PreferenceClass
-import com.bm.hdsbf.data.remote.state.ResourceState
+import com.bm.hdsbf.data.remote.Resource
 import com.bm.hdsbf.data.repository.google.GoogleRepository
 import com.bm.hdsbf.data.repository.google.GoogleSheetScraper
 import com.bm.hdsbf.ui.setting.ShowSetting
@@ -22,9 +22,9 @@ class ScheduleRepository @Inject constructor(
     private val preferenceClass: PreferenceClass
 ) {
 
-    fun getAllData(): Flow<ResourceState<Int>> {
+    fun getAllData(): Flow<Resource<Int>> {
         return flow {
-            emit(ResourceState.OnLoading(true))
+            emit(Resource.OnLoading(true))
             try {
                 var lastUpdate: Long = 0
                 googleRepository.getLastUpdateSchedule().collect { lastUpdate = it }
@@ -46,26 +46,26 @@ class ScheduleRepository @Inject constructor(
                     scheduleDao.deleteMonths(monthNowAndAfter)
 
                     monthNotSaved.forEachIndexed { index, sheetName ->
-                        emit(ResourceState.OnSuccess(((index.toDouble() * 100.0) / monthNotSaved.size.toDouble()).toInt()))
+                        emit(Resource.OnSuccess(((index.toDouble() * 100.0) / monthNotSaved.size.toDouble()).toInt()))
                         googleRepository.getDataSheet(sheetName)
                             .collect { list -> scheduleDao.insertAll(list) }
                     }
                     preferenceClass.setLastModified(Calendar.getInstance().timeInMillis)
                 }
-                emit(ResourceState.OnSuccess(100))
+                emit(Resource.OnSuccess(100))
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(ResourceState.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
             } finally {
-                emit(ResourceState.OnLoading(false))
+                emit(Resource.OnLoading(false))
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getDataCount(): Flow<ResourceState<HashMap<String, HashMap<Int, List<String>>>>> {
+    fun getDataCount(): Flow<Resource<HashMap<String, HashMap<Int, List<String>>>>> {
         return flow {
             try {
-                emit(ResourceState.OnLoading(true))
+                emit(Resource.OnLoading(true))
                 val allData =
                     if (preferenceClass.getShow().let { it == null || it == ShowSetting.ALL.text() }) scheduleDao.getAllSchedule()
                     else scheduleDao.getAllScheduleByName(preferenceClass.getName()!!)
@@ -80,41 +80,41 @@ class ScheduleRepository @Inject constructor(
                     }
                     hashMapMonth[month] = hashMapDate
                 }
-                emit(ResourceState.OnSuccess(hashMapMonth))
+                emit(Resource.OnSuccess(hashMapMonth))
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(ResourceState.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
             } finally {
-                emit(ResourceState.OnLoading(false))
+                emit(Resource.OnLoading(false))
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getScheduleByDate(month: String, date: Int): Flow<ResourceState<List<ScheduleVo>>> {
+    fun getScheduleByDate(month: String, date: Int): Flow<Resource<List<ScheduleVo>>> {
         return flow {
             try {
-                emit(ResourceState.OnLoading(true))
+                emit(Resource.OnLoading(true))
                 val dataSchedule = scheduleDao.getScheduleByDate(month, date)
-                emit(ResourceState.OnSuccess(dataSchedule))
+                emit(Resource.OnSuccess(dataSchedule))
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(ResourceState.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
             } finally {
-                emit(ResourceState.OnLoading(false))
+                emit(Resource.OnLoading(false))
             }
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getName(month: String): Flow<ResourceState<List<String>>> {
+    fun getName(month: String): Flow<Resource<List<String>>> {
         return flow {
             try {
-                emit(ResourceState.OnLoading(true))
+                emit(Resource.OnLoading(true))
                 val dataName = scheduleDao.getName(month)
-                emit(ResourceState.OnSuccess(dataName))
+                emit(Resource.OnSuccess(dataName))
             } catch (e: Exception) {
-                emit(ResourceState.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
             } finally {
-                emit(ResourceState.OnLoading(false))
+                emit(Resource.OnLoading(false))
             }
         }.flowOn(Dispatchers.IO)
     }

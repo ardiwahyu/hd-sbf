@@ -2,9 +2,9 @@ package com.bm.hdsbf.data.repository.google
 
 import com.bm.hdsbf.BuildConfig
 import com.bm.hdsbf.data.local.db.entities.ScheduleVo
+import com.bm.hdsbf.data.remote.Resource
 import com.bm.hdsbf.data.remote.service.GoogleDriveService
 import com.bm.hdsbf.data.remote.service.GoogleSheetService
-import com.bm.hdsbf.data.remote.state.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -70,9 +70,9 @@ class GoogleRepository @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getLastUpdateApp(): Flow<ResourceState<Boolean?>> {
+    fun getLastUpdateApp(): Flow<Resource<Boolean?>> {
         return flow {
-            emit(ResourceState.OnLoading(true))
+            emit(Resource.OnLoading(true))
             try {
                 val response = googleDriveService.getLastModifiedApp()
                 if (response.isSuccessful) {
@@ -82,19 +82,19 @@ class GoogleRepository @Inject constructor(
                     val versionNumber = nameSplit.last().removeSuffix(".apk").toInt()
                     if (versionNumber > BuildConfig.VERSION_CODE) {
                         if (nameSplit[1].contains("f", ignoreCase = true)) {
-                            emit(ResourceState.OnSuccess(true))
-                        } else emit(ResourceState.OnSuccess(false))
+                            emit(Resource.OnSuccess(true))
+                        } else emit(Resource.OnSuccess(false))
                     } else {
-                        emit(ResourceState.OnSuccess(null))
+                        emit(Resource.OnSuccess(null))
                     }
                 } else {
-                    emit(ResourceState.OnSuccess(null))
+                    emit(Resource.OnSuccess(null))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(ResourceState.OnSuccess(null))
+                emit(Resource.OnSuccess(null))
             } finally {
-                emit(ResourceState.OnLoading(false))
+                emit(Resource.OnLoading(false))
             }
         }.flowOn(Dispatchers.IO)
     }
