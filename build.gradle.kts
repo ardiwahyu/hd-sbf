@@ -5,4 +5,5 @@ plugins {
     alias(libs.plugins.hiltAndroid) apply false
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.kotlinParcelize) apply false
+    alias(libs.plugins.googleService) apply false
 }

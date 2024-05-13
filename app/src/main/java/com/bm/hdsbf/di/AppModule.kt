@@ -17,9 +17,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val CONNECT_TIMEOUT: Long = 30
-    private const val READ_TIMEOUT: Long = 30
-    private const val WRITE_TIMEOUT: Long = 30
+    private const val CONNECT_TIMEOUT: Long = 5
+    private const val READ_TIMEOUT: Long = 5
+    private const val WRITE_TIMEOUT: Long = 5
 
     @Provides
     @Singleton

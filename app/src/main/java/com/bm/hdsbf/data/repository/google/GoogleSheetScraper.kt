@@ -1,6 +1,6 @@
 package com.bm.hdsbf.data.repository.google
 
-import com.bm.hdsbf.BuildConfig
+import com.bm.hdsbf.data.remote.config.RemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -12,17 +12,16 @@ import java.util.Locale
 import javax.inject.Inject
 
 
-class GoogleSheetScraper @Inject constructor() {
-    companion object {
-        private const val URL = "https://docs.google.com/spreadsheets/d/${BuildConfig.SPREADSHEET_ID}/edit"
-    }
+class GoogleSheetScraper @Inject constructor(remoteConfig: RemoteConfig) {
+
+    private val url = "https://docs.google.com/spreadsheets/d/${remoteConfig.getSpreadsheetId()}/edit"
     private val df = SimpleDateFormat("MMMM yyyy", Locale("ID"))
 
     suspend fun getMonthAvailable(): Flow<List<String>> {
         val list = mutableListOf<String>()
         return flow {
             try {
-                val doc = Jsoup.connect(URL).get()
+                val doc = Jsoup.connect(url).get()
                 val tabs = doc.getElementsByClass("docs-sheet-tab")
                 for (tab in tabs) {
                     val tabName = tab.getElementsByClass("docs-sheet-tab-caption").first()

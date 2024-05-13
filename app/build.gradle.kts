@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.kapt)
     alias(libs.plugins.kotlinParcelize)
+    alias(libs.plugins.googleService)
 }
 
 val secretPropertiesFile = rootProject.file("secret.properties")
@@ -23,14 +24,12 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        setProperty("archivesBaseName", "HDSBF-v$versionName-$versionCode")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "BASE_URL_SPREADSHEET", secretProperties["BASE_URL_SPREADSHEET"].toString())
         buildConfigField("String", "BASE_URL_DRIVE", secretProperties["BASE_URL_DRIVE"].toString())
         buildConfigField("String", "API_KEY", secretProperties["API_KEY"].toString())
-        buildConfigField("String", "SPREADSHEET_ID", secretProperties["SPREADSHEET_ID"].toString())
-        buildConfigField("String", "APP_ID", secretProperties["APP_ID"].toString())
     }
 
     buildTypes {
@@ -93,6 +92,10 @@ dependencies {
     implementation(libs.worker)
 
     implementation(libs.progressbar)
+
+    implementation(platform(libs.firebase.boom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.config)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

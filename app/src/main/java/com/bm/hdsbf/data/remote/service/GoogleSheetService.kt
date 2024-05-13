@@ -10,10 +10,11 @@ import retrofit2.http.Query
 interface GoogleSheetService {
     @GET("spreadsheets/{id}/values:batchGet")
     suspend fun getData(
-        @Path("id") id: String = BuildConfig.SPREADSHEET_ID,
+        @Path("id") id: String,
         @Query("key") key: String = BuildConfig.API_KEY,
         @Query("ranges") rangesSchedule: String,
         @Query("ranges") rangesOff: String,
+        @Query("ranges") rangesTime: String,
         @Query("majorDimension") majorDimension: String = "ROWS",
         @Query("valueRenderOption") valueRenderOption: String = "FORMATTED_VALUE",
         @Query("dateTimeRenderOption") dateTimeRenderOption: String = "FORMATTED_STRING"

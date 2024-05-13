@@ -3,6 +3,7 @@ package com.bm.hdsbf.data.repository.google
 import com.bm.hdsbf.BuildConfig
 import com.bm.hdsbf.data.local.db.entities.ScheduleVo
 import com.bm.hdsbf.data.remote.Resource
+import com.bm.hdsbf.data.remote.config.RemoteConfig
 import com.bm.hdsbf.data.remote.service.GoogleDriveService
 import com.bm.hdsbf.data.remote.service.GoogleSheetService
 import kotlinx.coroutines.Dispatchers
@@ -16,12 +17,15 @@ import javax.inject.Inject
 
 class GoogleRepository @Inject constructor(
     private val googleDriveService: GoogleDriveService,
-    private val googleSheetService: GoogleSheetService
+    private val googleSheetService: GoogleSheetService,
+    private val remoteConfig: RemoteConfig
 ) {
 
     fun getLastUpdateSchedule(): Flow<Long> {
         return flow {
-            val response = googleDriveService.getLastModifiedSchedule()
+            val response = googleDriveService.getLastModifiedSchedule(
+                id = remoteConfig.getSpreadsheetId()
+            )
             if (response.isSuccessful) {
                 try {
                     val jsonObject = response.body()
@@ -46,8 +50,10 @@ class GoogleRepository @Inject constructor(
         val list = mutableListOf<ScheduleVo>()
         return flow {
             val response = googleSheetService.getData(
-                rangesSchedule = "$sheetName!A2:AK16",
-                rangesOff = "$sheetName!A25:AK39"
+                id = remoteConfig.getSpreadsheetId(),
+                rangesSchedule = "$sheetName!${remoteConfig.getRangeSchedule()}",
+                rangesOff = "$sheetName!${remoteConfig.getRangeOff()}",
+                rangesTime = "$sheetName!${remoteConfig.getRangeTime()}"
             )
             if (response.isSuccessful) {
                 val sheet = response.body()
@@ -74,7 +80,9 @@ class GoogleRepository @Inject constructor(
         return flow {
             emit(Resource.OnLoading(true))
             try {
-                val response = googleDriveService.getLastModifiedApp()
+                val response = googleDriveService.getLastModifiedApp(
+                    id = remoteConfig.getAppId()
+                )
                 if (response.isSuccessful) {
                     val jsonResponse = response.body()
                     val name = jsonResponse?.get("name")?.asString!!

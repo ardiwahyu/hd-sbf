@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "963027270800",
+    "project_id": "hd-sbf",
+    "storage_bucket": "hd-sbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963027270800:android:c1bbcccd7670abd0e6ec15",
+        "android_client_info": {
+          "package_name": "com.bm.hdsbf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCg2c0rWfUmRfnik3-yE8Rtqx8hEnAkOUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

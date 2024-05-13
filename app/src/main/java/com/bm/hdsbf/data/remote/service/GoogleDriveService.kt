@@ -10,14 +10,14 @@ import retrofit2.http.Query
 interface GoogleDriveService {
     @GET("files/{fileId}")
     suspend fun getLastModifiedSchedule(
-        @Path("fileId") id: String = BuildConfig.SPREADSHEET_ID,
+        @Path("fileId") id: String,
         @Query("key") key: String = BuildConfig.API_KEY,
         @Query("fields") fields: String = "modifiedTime"
     ): Response<JsonObject>
 
     @GET("files/{fileId}")
     suspend fun getLastModifiedApp(
-        @Path("fileId") id: String = BuildConfig.APP_ID,
+        @Path("fileId") id: String,
         @Query("key") key: String = BuildConfig.API_KEY,
         @Query("fields") fields: String = "name"
     ): Response<JsonObject>

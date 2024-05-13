@@ -2,14 +2,14 @@
 agp = "8.4.0"
 kotlin = "1.9.23"
 kotlinParcelize= "2.0.0-Beta5"
-coreKtx = "1.13.0"
+coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
-material = "1.11.0"
+material = "1.12.0"
 activity = "1.9.0"
-fragment = "1.6.2"
+fragment = "1.7.0"
 constraintlayout = "2.1.4"
 calendar = "2.5.0"
 jsoup = "1.12.2"
@@ -22,6 +22,8 @@ retrofit = "2.11.0"
 loggingInterceptor = "4.12.0"
 room = "2.6.1"
 worker = "2.9.0"
+googleService = "4.4.1"
+firebaseBoom = "33.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +53,9 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 progressbar = { group = "com.akexorcist", name = "round-corner-progress-bar", version.ref = "roundCornerProgressBar" }
 worker = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "worker" }
+firebase-boom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBoom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -58,4 +63,5 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlinParcelize" }
 hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kapt"}
+googleService = { id = "com.google.gms.google-services", version.ref = "googleService" }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+  <entry>
+    <key>spreadsheet_id</key>
+    <value>1ATDJHw0ACRLS108MgVFIId568bBCwvM7J2yX67zWHiY</value>
+  </entry>
+  <entry>
+    <key>app_id</key>
+    <value>16kg_Tp0c8fxAnX5Gh76AD8ARRF8TcSkv</value>
+  </entry>
+  <entry>
+    <key>range_schedule</key>
+    <value>A2:AK16</value>
+  </entry>
+  <entry>
+    <key>range_off</key>
+    <value>A25:AK39</value>
+  </entry>
+  <entry>
+    <key>range_time</key>
+    <value>A20:B22</value>
+  </entry>
+</defaults>
