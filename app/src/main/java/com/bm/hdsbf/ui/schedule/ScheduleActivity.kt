@@ -119,6 +119,9 @@ class ScheduleActivity : AppCompatActivity() {
                     container.dayLayoutBinding.viewHd1.apply { if (listHd?.contains("HD1") == true) setVisible() else setGone()}
                     container.dayLayoutBinding.viewHd2.apply { if (listHd?.contains("HD2") == true) setVisible() else setGone()}
                     container.dayLayoutBinding.viewHd3.apply { if (listHd?.contains("HD3") == true) setVisible() else setGone()}
+                    container.dayLayoutBinding.ivOff.apply {
+                        if (listHd?.firstOrNull { it.contains("OFF") }?.isNotEmpty() == true) setVisible() else setGone()
+                    }
                 }
                 if (data.position == DayPosition.MonthDate) {
                     container.dayLayoutBinding.calendarDayText.textSize = 16f

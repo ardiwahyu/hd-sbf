@@ -2,6 +2,8 @@ package com.bm.hdsbf.data.local.sp
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -14,6 +16,7 @@ class PreferenceClass @Inject constructor(
         private const val KEY_SHOW = "key_show"
         private const val KEY_REMINDER = "key_reminder"
         private const val KEY_LAST_MODIFIED = "key_last_modified"
+        private const val KEY_TIME_SCHEDULE = "key_time_schedule"
     }
     private var pref: SharedPreferences
     private var editor: SharedPreferences.Editor
@@ -55,5 +58,14 @@ class PreferenceClass @Inject constructor(
 
     fun getLastModified(): Long {
         return pref.getLong(KEY_LAST_MODIFIED, 0)
+    }
+
+    fun setTimeSchedule(time: HashMap<String, String>) {
+        editor.putString(KEY_TIME_SCHEDULE, Gson().toJson(time)).commit()
+    }
+
+    fun getTimeSchedule(): HashMap<String, String>? {
+        val type = object : TypeToken<HashMap<String, String>?>(){}.type
+        return Gson().fromJson(pref.getString(KEY_TIME_SCHEDULE, ""), type)
     }
 }

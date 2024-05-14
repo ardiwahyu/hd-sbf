@@ -2,6 +2,7 @@ package com.bm.hdsbf.data.repository.google
 
 import com.bm.hdsbf.BuildConfig
 import com.bm.hdsbf.data.local.db.entities.ScheduleVo
+import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.data.remote.Resource
 import com.bm.hdsbf.data.remote.config.RemoteConfig
 import com.bm.hdsbf.data.remote.service.GoogleDriveService
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class GoogleRepository @Inject constructor(
     private val googleDriveService: GoogleDriveService,
     private val googleSheetService: GoogleSheetService,
-    private val remoteConfig: RemoteConfig
+    private val remoteConfig: RemoteConfig,
+    private val preferenceClass: PreferenceClass
 ) {
 
     fun getLastUpdateSchedule(): Flow<Long> {
@@ -70,6 +72,27 @@ class GoogleRepository @Inject constructor(
                             }
                         }
                     }
+                }
+                sheet?.valueRanges?.get(1)?.values?.apply {
+                    removeAt(0)
+                    forEach {
+                        var name = ""
+                        it.forEachIndexed { i, value ->
+                            if (i == 1) name = value
+                            if (i > 1) {
+                                if (value.length > 3) {
+                                    list.add(ScheduleVo(month = sheetName, date = i-1, name = name, type = "OFF-$value"))
+                                }
+                            }
+                        }
+                    }
+                }
+                sheet?.valueRanges?.get(2)?.values?.apply {
+                    val hash = hashMapOf<String, String>()
+                    forEach {
+                        hash[it.first()] = it.last()
+                    }
+                    preferenceClass.setTimeSchedule(hash)
                 }
                 emit(list)
             } else emit(list)
