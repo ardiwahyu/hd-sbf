@@ -17,6 +17,7 @@ class PreferenceClass @Inject constructor(
         private const val KEY_REMINDER = "key_reminder"
         private const val KEY_LAST_MODIFIED = "key_last_modified"
         private const val KEY_TIME_SCHEDULE = "key_time_schedule"
+        private const val KEY_IS_FIRST = "key_is_first"
     }
     private var pref: SharedPreferences
     private var editor: SharedPreferences.Editor
@@ -67,5 +68,13 @@ class PreferenceClass @Inject constructor(
     fun getTimeSchedule(): HashMap<String, String>? {
         val type = object : TypeToken<HashMap<String, String>?>(){}.type
         return Gson().fromJson(pref.getString(KEY_TIME_SCHEDULE, ""), type)
+    }
+
+    fun setIsFirst(isFirst: Boolean) {
+        editor.putBoolean(KEY_IS_FIRST, isFirst).commit()
+    }
+
+    fun getIsFirst(): Boolean {
+        return pref.getBoolean(KEY_IS_FIRST, true)
     }
 }

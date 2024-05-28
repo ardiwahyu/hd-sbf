@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.common)
     implementation(libs.hilt.work)
+    implementation(libs.activity)
     kapt(libs.hilt.android.compiler)
     kapt(libs.hilt.compiler)
 

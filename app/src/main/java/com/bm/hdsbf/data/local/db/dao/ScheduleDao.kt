@@ -19,7 +19,7 @@ interface ScheduleDao {
     @Query("SELECT * FROM schedule")
     suspend fun getAllSchedule(): List<ScheduleVo>
 
-    @Query("SELECT * FROM schedule WHERE name = :name")
+    @Query("SELECT * FROM schedule WHERE name = :name OR type LIKE 'OFF%'")
     suspend fun getAllScheduleByName(name: String): List<ScheduleVo>
 
     @Query("SELECT * FROM schedule WHERE month = :month AND date = :date ORDER BY type ASC")

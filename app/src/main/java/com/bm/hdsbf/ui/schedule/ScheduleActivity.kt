@@ -13,12 +13,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.bm.hdsbf.R
+import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.databinding.ActivityScheduleBinding
 import com.bm.hdsbf.databinding.CalendarDayLayoutBinding
 import com.bm.hdsbf.ui.setting.SettingFragment
 import com.bm.hdsbf.utils.CalendarUtil.daysOfWeek
 import com.bm.hdsbf.utils.CalendarUtil.displayName
 import com.bm.hdsbf.utils.ViewUtil.setGone
+import com.bm.hdsbf.utils.ViewUtil.setInvisible
 import com.bm.hdsbf.utils.ViewUtil.setVisible
 import com.bm.hdsbf.utils.ViewUtil.showShortToast
 import com.kizitonwose.calendar.core.CalendarDay
@@ -41,6 +43,7 @@ class ScheduleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScheduleBinding
     private val viewModel: ScheduleViewModel by viewModels()
     @Inject lateinit var scheduleAdapter: ScheduleAdapter
+    @Inject lateinit var preferenceClass: PreferenceClass
     private val today by lazy { LocalDate.now() }
     private var selectedDate: LocalDate? = null
 
@@ -49,11 +52,13 @@ class ScheduleActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityScheduleBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        preferenceClass.setIsFirst(false)
 
         binding.rvSchedule.adapter = scheduleAdapter
 
@@ -120,7 +125,7 @@ class ScheduleActivity : AppCompatActivity() {
                     container.dayLayoutBinding.viewHd2.apply { if (listHd?.contains("HD2") == true) setVisible() else setGone()}
                     container.dayLayoutBinding.viewHd3.apply { if (listHd?.contains("HD3") == true) setVisible() else setGone()}
                     container.dayLayoutBinding.ivOff.apply {
-                        if (listHd?.firstOrNull { it.contains("OFF") }?.isNotEmpty() == true) setVisible() else setGone()
+                        if (listHd?.firstOrNull { it.contains("OFF") }?.isNotEmpty() == true) setVisible() else setInvisible()
                     }
                 }
                 if (data.position == DayPosition.MonthDate) {

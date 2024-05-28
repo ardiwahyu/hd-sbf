@@ -132,6 +132,10 @@ class SettingFragment : BottomSheetDialogFragment() {
         binding.scReminder.setOnCheckedChangeListener { _, b -> preferenceClass.setReminder(b) }
         binding.tvScReminder.setOnClickListener { binding.scReminder.performClick() }
 
+        val timeHelpdesk = preferenceClass.getTimeSchedule()
+        binding.tvTimeHelpdesk.text =
+            timeHelpdesk?.keys?.sorted()?.joinToString(separator = "\n") { "$it : ${timeHelpdesk[it]}" }
+
         binding.tvVersi.text = BuildConfig.VERSION_NAME
     }
 

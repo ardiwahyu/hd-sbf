@@ -179,6 +179,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Waktu Helpdesk"
+            android:fontFamily="@font/nunito_semi_bold"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tv_time_helpdesk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="1.0"
+            android:textColor="@color/textShadow"
+            android:fontFamily="@font/nunito_regular"
+            android:textSize="12sp"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/layout_divider"
+        android:layout_marginHorizontal="16dp"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp"
         android:layout_marginBottom="20dp">
 

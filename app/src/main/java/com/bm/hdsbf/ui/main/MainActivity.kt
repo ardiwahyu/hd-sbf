@@ -9,16 +9,18 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.bm.hdsbf.R
+import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.data.remote.config.RemoteConfig
 import com.bm.hdsbf.databinding.ActivityMainBinding
 import com.bm.hdsbf.ui.schedule.ScheduleActivity
 import com.bm.hdsbf.ui.update.UpdateFragment
+import com.bm.hdsbf.utils.ViewUtil.dialogError
 import com.bm.hdsbf.utils.ViewUtil.setGone
 import com.bm.hdsbf.utils.ViewUtil.setVisible
-import com.bm.hdsbf.utils.ViewUtil.showShortToast
+import com.google.firebase.remoteconfig.ConfigUpdate
+import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.remoteConfigSettings
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,29 +31,29 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<MainViewModel>()
     private val updateDialog by lazy { UpdateFragment() }
     @Inject lateinit var remoteConfig: RemoteConfig
+    @Inject lateinit var preferenceClass: PreferenceClass
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val remoteConfig = FirebaseRemoteConfig.getInstance()
-        val configSetting = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 60 * 60
-            fetchTimeoutInSeconds = 5
-        }
-        remoteConfig.setConfigSettingsAsync(configSetting)
-        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-
-        remoteConfig.fetchAndActivate().addOnCompleteListener {
+        val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+        firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener {
             viewModel.getLastVersionApp()
         }
+        firebaseRemoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
+            override fun onUpdate(configUpdate: ConfigUpdate) {
+                firebaseRemoteConfig.activate()
+            }
+            override fun onError(error: FirebaseRemoteConfigException) { }
+        })
 
         initObservers()
     }
@@ -63,7 +65,20 @@ class MainActivity : AppCompatActivity() {
             binding.llcContainerLoading.apply { if (it) setVisible() else setGone() }
         }
         viewModel.error.observe(this) {
-            showShortToast(it)
+            if (preferenceClass.getIsFirst()) {
+                val dialog = dialogError(
+                    "Perhatian",
+                    "Gagal mengambil data, cek koneksi internet Anda",
+                    "Muat Ulang", false
+                ) {
+                    viewModel.getLastVersionApp()
+                    it.dismiss()
+                }
+                dialog.show()
+            } else {
+                startActivity(Intent(this, ScheduleActivity::class.java))
+                finishAfterTransition()
+            }
         }
         viewModel.progress.observe(this) {
             binding.tvProgress.text = "Mengambil Data ($it%)"
