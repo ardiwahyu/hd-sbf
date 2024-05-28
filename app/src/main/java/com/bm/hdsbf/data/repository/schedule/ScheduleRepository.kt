@@ -22,6 +22,8 @@ class ScheduleRepository @Inject constructor(
     private val preferenceClass: PreferenceClass
 ) {
 
+    private val monthNowAndAfter by lazy { getMonthNowAndAfter() }
+
     fun getAllData(): Flow<Resource<Int>> {
         return flow {
             emit(Resource.OnLoading(true))
@@ -41,7 +43,6 @@ class ScheduleRepository @Inject constructor(
                     }
                     if (monthSaved.isNotEmpty()) scheduleDao.deleteMonths(monthSaved)
 
-                    val monthNowAndAfter = getMonthNowAndAfter()
                     monthNotSaved.addAll(monthNowAndAfter)
                     scheduleDao.deleteMonths(monthNowAndAfter)
 

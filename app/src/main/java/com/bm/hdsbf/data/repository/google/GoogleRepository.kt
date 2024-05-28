@@ -7,6 +7,7 @@ import com.bm.hdsbf.data.remote.Resource
 import com.bm.hdsbf.data.remote.config.RemoteConfig
 import com.bm.hdsbf.data.remote.service.GoogleDriveService
 import com.bm.hdsbf.data.remote.service.GoogleSheetService
+import com.bm.hdsbf.utils.CalendarUtil.getMonthNowAndAfter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -22,6 +23,8 @@ class GoogleRepository @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val preferenceClass: PreferenceClass
 ) {
+
+    private val monthNowAndAfter by lazy { getMonthNowAndAfter() }
 
     fun getLastUpdateSchedule(): Flow<Long> {
         return flow {
@@ -87,12 +90,14 @@ class GoogleRepository @Inject constructor(
                         }
                     }
                 }
-                sheet?.valueRanges?.get(2)?.values?.apply {
-                    val hash = hashMapOf<String, String>()
-                    forEach {
-                        hash[it.first()] = it.last()
+                if (sheetName == monthNowAndAfter[0]) {
+                    sheet?.valueRanges?.get(2)?.values?.apply {
+                        val hash = hashMapOf<String, String>()
+                        forEach {
+                            hash[it.first()] = it.last()
+                        }
+                        preferenceClass.setTimeSchedule(hash)
                     }
-                    preferenceClass.setTimeSchedule(hash)
                 }
                 emit(list)
             } else emit(list)
