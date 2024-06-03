@@ -28,6 +28,6 @@ interface ScheduleDao {
     @Query("SELECT DISTINCT name FROM schedule WHERE month = :month ORDER BY name ASC")
     suspend fun getName(month: String): List<String>
 
-    @Query("SELECT * FROM schedule WHERE month = :month AND date = :date AND name = :name ORDER BY type ASC")
+    @Query("SELECT * FROM schedule WHERE month = :month AND date = :date AND name = :name AND type LIKE 'HD%' ORDER BY type ASC")
     suspend fun getScheduleByDateAndName(month: String, date: Int, name: String): List<ScheduleVo>
 }
