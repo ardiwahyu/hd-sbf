@@ -16,13 +16,13 @@ object CalendarUtil {
 
     fun String.formatDate(): String {
         val inputFormat = arrayOf("dd/MM/yyyy", "dd-MM-yyyy", "dd/MM/yy", "dd-MM-yy", "dd/MM", "dd-MM")
-        val outputFormat = "dd MMMM yyyy"
-        val dfOutput = SimpleDateFormat(outputFormat, Locale("ID"))
+        val outputFormat = arrayOf("dd MMMM yyyy", "dd MMMM")
         var output = this
         for (f in inputFormat) {
             try {
                 val dfInput = SimpleDateFormat(f, Locale("ID"))
                 val dateOutput = dfInput.parse(this)!!
+                val dfOutput = SimpleDateFormat(if (f.contains("y")) outputFormat[0] else outputFormat[1], Locale("ID"))
                 output = dfOutput.format(dateOutput)
                 break
             } catch (_: Exception) {
