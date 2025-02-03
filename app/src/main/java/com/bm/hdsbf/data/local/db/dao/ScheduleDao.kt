@@ -2,6 +2,7 @@ package com.bm.hdsbf.data.local.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.bm.hdsbf.data.local.db.entities.ScheduleVo
 
@@ -13,7 +14,7 @@ interface ScheduleDao {
     @Query("DELETE FROM schedule WHERE month in (:months)")
     suspend fun deleteMonths(months: List<String>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(listScheduleVo: List<ScheduleVo>)
 
     @Query("SELECT * FROM schedule")

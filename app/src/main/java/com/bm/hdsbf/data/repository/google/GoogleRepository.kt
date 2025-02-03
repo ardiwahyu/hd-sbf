@@ -70,7 +70,13 @@ class GoogleRepository @Inject constructor(
                             if (i == 1) name = value
                             if (i > 1) {
                                 if (value.contains("HD")) {
-                                    list.add(ScheduleVo(month = sheetName, date = i-1, name = name, type = value))
+                                    list.add(ScheduleVo(
+                                        id = "$value$name${i-1}$sheetName".hashCode(),
+                                        month = sheetName,
+                                        date = i-1,
+                                        name = name,
+                                        type = value
+                                    ))
                                 }
                             }
                         }
@@ -84,7 +90,13 @@ class GoogleRepository @Inject constructor(
                             if (i == 1) name = value
                             if (i > 1) {
                                 if (value.length > 3) {
-                                    list.add(ScheduleVo(month = sheetName, date = i-1, name = name, type = "OFF-$value"))
+                                    list.add(ScheduleVo(
+                                        id = "OFF-$value$name${i-1}$sheetName".hashCode(),
+                                        month = sheetName,
+                                        date = i-1,
+                                        name = name,
+                                        type = "OFF-$value"
+                                    ))
                                 }
                             }
                         }

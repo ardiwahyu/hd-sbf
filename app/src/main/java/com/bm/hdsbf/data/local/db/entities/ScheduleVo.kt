@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "schedule")
 class ScheduleVo (
-    @PrimaryKey(autoGenerate = true) val id: Long? = null,
+    @PrimaryKey(autoGenerate = false) val id: Int,
     val month: String,
     val date: Int,
     val name: String,

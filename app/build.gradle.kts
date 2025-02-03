@@ -16,14 +16,23 @@ secretProperties.load(FileInputStream(secretPropertiesFile))
 
 android {
     namespace = "com.bm.hdsbf"
-    compileSdk = 34
+    compileSdk = 35
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(secretProperties["RELEASE_STORE_FILE"].toString())
+            storePassword = secretProperties["RELEASE_STORE_PASSWORD"].toString()
+            keyAlias = secretProperties["RELEASE_KEY_ALIAS"].toString()
+            keyPassword = secretProperties["RELEASE_KEY_PASSWORD"].toString()
+        }
+    }
 
     defaultConfig {
         applicationId = "com.bm.hdsbf"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 3
-        versionName = "2.1"
+        targetSdk = 35
+        versionCode = 4
+        versionName = "2.2"
         setProperty("archivesBaseName", "HDSBF-v$versionName-$versionCode")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -43,6 +52,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
