@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".ui.absensi.AbsensiActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/colorPrimary">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_arrow_back"
+            android:adjustViewBounds="true"
+            android:padding="20dp"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/iv_back"
+            android:text="Absensi"
+            android:textColor="@color/white"
+            android:fontFamily="@font/nunito_semi_bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/llc_container_button">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NIK"
+                android:fontFamily="@font/nunito_semi_bold"/>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_nik"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Masukkan NIK"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="14sp"
+                android:padding="14dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/nunito_semi_bold"/>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Masukkan Password"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="14sp"
+                android:padding="14dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Id Device"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/nunito_semi_bold"/>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_id_device"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Masukkan ID Device"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="14sp"
+                android:padding="14dp"/>
+
+            <TextView
+                android:id="@+id/tv_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Note"
+                android:fontFamily="@font/nunito_regular"
+                android:textStyle="italic"
+                android:layout_marginTop="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_periksa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito_semi_bold"
+                app:backgroundTint="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/tv_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Result: "
+                android:fontFamily="@font/nunito_regular"
+                android:layout_marginTop="16dp"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llc_container_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:padding="16dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_masuk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Masuk"
+            android:layout_weight=".5"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/nunito_semi_bold"
+            app:backgroundTint="@color/colorPrimary"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_pulang"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Pulang"
+            android:layout_weight=".5"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/nunito_semi_bold"
+            app:backgroundTint="@color/colorPrimary"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

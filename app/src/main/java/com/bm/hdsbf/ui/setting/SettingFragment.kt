@@ -1,29 +1,37 @@
 package com.bm.hdsbf.ui.setting
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.app.AlarmManager
+import android.content.Context.ALARM_SERVICE
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.S
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListPopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.bm.hdsbf.BuildConfig
 import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.databinding.FragmentSettingBottomSheetBinding
+import com.bm.hdsbf.ui.absensi.AbsensiActivity
 import com.bm.hdsbf.ui.schedule.ScheduleViewModel
 import com.bm.hdsbf.utils.CalendarUtil.displayName
+import com.bm.hdsbf.utils.ViewUtil.dialogConfirm
 import com.bm.hdsbf.utils.ViewUtil.setGone
 import com.bm.hdsbf.utils.ViewUtil.setVisible
 import com.bm.hdsbf.utils.ViewUtil.showLongToast
 import com.bm.hdsbf.utils.ViewUtil.showShortToast
 import com.bm.hdsbf.utils.adapter.ListPopUpWindowAdapter
-import com.bm.hdsbf.utils.notification.NotificationManager
+import com.bm.hdsbf.utils.scheduler.ReminderScheduler
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kizitonwose.calendar.core.yearMonth
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,15 +44,20 @@ class SettingFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<SettingViewModel>()
     private val scheduleViewModel by activityViewModels<ScheduleViewModel>()
-    @Inject lateinit var preferenceClass: PreferenceClass
-    @Inject lateinit var notificationManager: NotificationManager
+
     private val listName = mutableListOf<String>()
     private val listShow by lazy { ShowSetting.entries.map { it.text() } }
-    private val notificationLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        if (it) notificationManager.activate()
+
+    @Inject lateinit var preferenceClass: PreferenceClass
+    @Inject lateinit var scheduler: ReminderScheduler
+
+    private val requestNotificationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        if (!it) requireContext().showShortToast("Ijin notifikasi ditolak")
         else {
-            binding.scReminder.isChecked = false
-            requireContext().showShortToast("Ijin notifikasi ditolak")
+            preferenceClass.setReminder(true)
+            scheduler.startScheduler()
         }
     }
 
@@ -121,13 +134,10 @@ class SettingFragment : BottomSheetDialogFragment() {
                     binding.scReminder.isChecked = false
                     requireContext().showLongToast("Pilih nama Anda terlebih dahulu")
                 } else {
-                    if (SDK_INT >= TIRAMISU) {
-                        if (requireActivity().checkSelfPermission(POST_NOTIFICATIONS) == PERMISSION_GRANTED) {
-                            notificationManager.activate()
-                        } else notificationLauncher.launch(POST_NOTIFICATIONS)
-                    } else notificationManager.activate()
+                    preferenceClass.setReminder(true)
+                    showPermissionDialog()
                 }
-            } else notificationManager.cancel()
+            } else preferenceClass.setReminder(false)
         }
         binding.scReminder.setOnCheckedChangeListener { _, b -> preferenceClass.setReminder(b) }
         binding.tvScReminder.setOnClickListener { binding.scReminder.performClick() }
@@ -136,7 +146,16 @@ class SettingFragment : BottomSheetDialogFragment() {
         binding.tvTimeHelpdesk.text =
             timeHelpdesk?.keys?.sorted()?.joinToString(separator = "\n") { "$it : ${timeHelpdesk[it]}" }
 
-        binding.tvVersi.text = BuildConfig.VERSION_NAME
+        when (BuildConfig.FLAVOR) {
+            "normal" -> binding.llcAbsensi.setGone()
+            "superapp" -> binding.llcAbsensi.setVisible()
+        }
+        binding.llcAbsensi.setOnClickListener {
+            startActivity(Intent(requireContext(), AbsensiActivity::class.java))
+            dialog?.dismiss()
+        }
+
+        binding.tvVersi.text = BuildConfig.VERSION_NAME_FULL
     }
 
     private fun initObservers() {
@@ -149,5 +168,49 @@ class SettingFragment : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun requestPermission() {
+        if (SDK_INT >= TIRAMISU) {
+            if (requireActivity().checkSelfPermission(POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
+                requestNotificationPermission.launch(POST_NOTIFICATIONS)
+            }
+        }
+        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+        if (SDK_INT >= S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+                try {
+                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                    intent.data = "package:${requireActivity().packageName}".toUri()
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    intent.data = "package:${requireActivity().packageName}".toUri()
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    private fun showPermissionDialog() {
+        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+        val isNotPermitNotif = SDK_INT >= TIRAMISU &&
+                requireActivity().checkSelfPermission(POST_NOTIFICATIONS) != PERMISSION_GRANTED
+        val isNotPermitExactAlarm = SDK_INT >= S && !alarmManager.canScheduleExactAlarms()
+        if (isNotPermitNotif || isNotPermitExactAlarm) {
+            requireContext().dialogConfirm(
+                "Aktifkan Pengingat",
+                "Supaya aplikasi bisa mengingatkan jadwal helpdeskmu. izinkan notifikasi ya.",
+                "Aktifkan",
+                "Nanti saja",
+                {
+                    requestPermission()
+                    it.dismiss()
+                }, {
+                    it.dismiss()
+                },
+                false
+            ).show()
+        }
     }
 }

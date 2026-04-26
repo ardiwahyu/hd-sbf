@@ -18,6 +18,7 @@ class PreferenceClass @Inject constructor(
         private const val KEY_LAST_MODIFIED = "key_last_modified"
         private const val KEY_TIME_SCHEDULE = "key_time_schedule"
         private const val KEY_IS_FIRST = "key_is_first"
+        private const val KEY_ID_DEVICE = "key_id_device"
     }
     private var pref: SharedPreferences
     private var editor: SharedPreferences.Editor
@@ -76,5 +77,21 @@ class PreferenceClass @Inject constructor(
 
     fun getIsFirst(): Boolean {
         return pref.getBoolean(KEY_IS_FIRST, true)
+    }
+
+    fun setIdDevice(id: String) {
+        editor.putString(KEY_ID_DEVICE, id).commit()
+    }
+
+    fun getIdDevice(): String? {
+        return pref.getString(KEY_ID_DEVICE, null)
+    }
+
+    fun setString(key: String, value: String) {
+        editor.putString(key, value).commit()
+    }
+
+    fun getString(key: String): String? {
+        return pref.getString(key, null)
     }
 }

@@ -1,6 +1,7 @@
 package com.bm.hdsbf.di
 
 import com.bm.hdsbf.BuildConfig
+import com.bm.hdsbf.data.remote.service.AbsensiService
 import com.bm.hdsbf.data.remote.service.GoogleDriveService
 import com.bm.hdsbf.data.remote.service.GoogleSheetService
 import dagger.Module
@@ -77,5 +78,34 @@ object AppModule {
 
         googleDriveService = retrofit.create(GoogleDriveService::class.java)
         return googleDriveService
+    }
+
+    @Provides
+    @Singleton
+    fun provideAbsensiService(): AbsensiService {
+        val absensiService: AbsensiService
+        val client = OkHttpClient.Builder()
+        if(BuildConfig.DEBUG) {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            client.addInterceptor(interceptor)
+        }
+        client
+            .followRedirects(true)
+            .followSslRedirects(true)
+            .retryOnConnectionFailure(true)
+            .cache(null)
+            .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://atom.mobile.bimasakti.hrcules.co.id/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client.build())
+            .build()
+
+        absensiService = retrofit.create(AbsensiService::class.java)
+        return absensiService
     }
 }

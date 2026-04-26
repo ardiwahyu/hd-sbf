@@ -1,8 +1,8 @@
 package com.bm.hdsbf
 
 import android.app.Application
-import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Configuration
+import com.bm.hdsbf.utils.scheduler.NotificationHelper
+import com.bm.hdsbf.utils.scheduler.ReminderScheduler
 import com.google.firebase.FirebaseApp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
@@ -10,13 +10,8 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class BaseApplication: Application(), Configuration.Provider {
-    @Inject lateinit var workerFactory: HiltWorkerFactory
-
-    override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+class BaseApplication: Application() {
+    @Inject lateinit var scheduler: ReminderScheduler
 
     override fun onCreate() {
         super.onCreate()
@@ -30,5 +25,8 @@ class BaseApplication: Application(), Configuration.Provider {
         }
         remoteConfig.setConfigSettingsAsync(configSetting)
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+
+        NotificationHelper.createChannels(this)
+        scheduler.startScheduler()
     }
 }

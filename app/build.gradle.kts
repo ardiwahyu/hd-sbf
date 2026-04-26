@@ -31,8 +31,8 @@ android {
         applicationId = "com.bm.hdsbf"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "2.2"
+        versionCode = 6
+        versionName = "3.0"
         setProperty("archivesBaseName", "HDSBF-v$versionName-$versionCode")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -53,6 +53,17 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
+        }
+    }
+    flavorDimensions += "version"
+    productFlavors {
+        create("superapp") {
+            dimension = "version"
+            buildConfigField("String", "VERSION_NAME_FULL", "\"${defaultConfig.versionName}-superapp\"")
+        }
+        create("normal") {
+            dimension = "version"
+            buildConfigField("String", "VERSION_NAME_FULL", "\"${defaultConfig.versionName}-normal\"")
         }
     }
     compileOptions {

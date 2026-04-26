@@ -1,14 +1,22 @@
 package com.bm.hdsbf.ui.schedule
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
@@ -19,10 +27,12 @@ import com.bm.hdsbf.databinding.CalendarDayLayoutBinding
 import com.bm.hdsbf.ui.setting.SettingFragment
 import com.bm.hdsbf.utils.CalendarUtil.daysOfWeek
 import com.bm.hdsbf.utils.CalendarUtil.displayName
+import com.bm.hdsbf.utils.ViewUtil.dialogConfirm
 import com.bm.hdsbf.utils.ViewUtil.setGone
 import com.bm.hdsbf.utils.ViewUtil.setInvisible
 import com.bm.hdsbf.utils.ViewUtil.setVisible
 import com.bm.hdsbf.utils.ViewUtil.showShortToast
+import com.bm.hdsbf.utils.scheduler.ReminderScheduler
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -44,8 +54,18 @@ class ScheduleActivity : AppCompatActivity() {
     private val viewModel: ScheduleViewModel by viewModels()
     @Inject lateinit var scheduleAdapter: ScheduleAdapter
     @Inject lateinit var preferenceClass: PreferenceClass
+    @Inject lateinit var scheduler: ReminderScheduler
     private val today by lazy { LocalDate.now() }
     private var selectedDate: LocalDate? = null
+
+    private val requestNotificationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        if (!it) showShortToast("Ijin notifikasi ditolak")
+        else {
+            scheduler.startScheduler()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +103,8 @@ class ScheduleActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             binding.calendarView.post { selectDate(today) }
         }
+
+        showPermissionDialog()
     }
 
     private fun initObservers() {
@@ -185,5 +207,49 @@ class ScheduleActivity : AppCompatActivity() {
 
     class MonthViewContainer(view: View) : ViewContainer(view) {
         val titlesContainer = view as ViewGroup
+    }
+
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestNotificationPermission.launch(POST_NOTIFICATIONS)
+            }
+        }
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+                try {
+                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                    intent.data = "package:$packageName".toUri()
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    intent.data = "package:$packageName".toUri()
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    private fun showPermissionDialog() {
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val isNotPermitNotif = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        val isNotPermitExactAlarm = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()
+        if (isNotPermitNotif || isNotPermitExactAlarm) {
+            dialogConfirm(
+                "Aktifkan Pengingat",
+                "Supaya aplikasi bisa mengingatkan jadwal helpdeskmu. izinkan notifikasi ya.",
+                "Aktifkan",
+                "Nanti saja",
+                {
+                    requestPermission()
+                    it.dismiss()
+                }, {
+                    it.dismiss()
+                },
+                false
+            ).show()
+        }
     }
 }
