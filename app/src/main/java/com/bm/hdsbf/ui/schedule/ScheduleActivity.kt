@@ -6,6 +6,7 @@ import android.app.AlarmManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -16,7 +17,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
@@ -220,11 +220,11 @@ class ScheduleActivity : AppCompatActivity() {
             if (!alarmManager.canScheduleExactAlarms()) {
                 try {
                     val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                    intent.data = "package:$packageName".toUri()
+                    intent.data = Uri.fromParts("package", packageName, null)
                     startActivity(intent)
                 } catch (e: Exception) {
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    intent.data = "package:$packageName".toUri()
+                    intent.data = Uri.fromParts("package", packageName, null)
                     startActivity(intent)
                 }
             }

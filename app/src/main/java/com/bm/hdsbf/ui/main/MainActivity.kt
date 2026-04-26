@@ -2,13 +2,14 @@ package com.bm.hdsbf.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.data.remote.config.RemoteConfig
 import com.bm.hdsbf.databinding.ActivityMainBinding
@@ -22,6 +23,9 @@ import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -32,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val updateDialog by lazy { UpdateFragment() }
     @Inject lateinit var remoteConfig: RemoteConfig
     @Inject lateinit var preferenceClass: PreferenceClass
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,15 +81,22 @@ class MainActivity : AppCompatActivity() {
                 }
                 dialog.show()
             } else {
-                startActivity(Intent(this, ScheduleActivity::class.java))
-                finishAfterTransition()
+                if (job?.isActive == true) return@observe
+                job = lifecycleScope.launch {
+                    startActivity(Intent(this@MainActivity, ScheduleActivity::class.java))
+                    finishAfterTransition()
+                }
             }
         }
         viewModel.progress.observe(this) {
             binding.tvProgress.text = "Mengambil Data ($it%)"
             if (it == 100) {
-                startActivity(Intent(this, ScheduleActivity::class.java))
-                finishAfterTransition()
+                if (job?.isActive == true) return@observe
+                job = lifecycleScope.launch {
+                    delay(1000)
+                    startActivity(Intent(this@MainActivity, ScheduleActivity::class.java))
+                    finishAfterTransition()
+                }
             }
         }
 
@@ -105,9 +117,9 @@ class MainActivity : AppCompatActivity() {
         updateDialog.isCancelable = false
         updateDialog.onContinue = { viewModel.getAllData() }
         updateDialog.onDownload = {
-            val url = "https://drive.google.com/file/d/${remoteConfig.getAppId()}/view?usp=sharing"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val appId = remoteConfig.getAppId()
+            val directDownloadUrl = "https://drive.google.com/uc?export=download&id=$appId"
+            val intent = Intent(Intent.ACTION_VIEW, directDownloadUrl.toUri())
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()

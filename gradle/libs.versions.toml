@@ -1,5 +1,9 @@
 [versions]
 agp = "8.4.1"
+googleApiClientAndroid = "2.2.0"
+googleApiServicesDrive = "v3-rev20230822-2.0.0"
+googleApiServicesSheets = "v4-rev20230815-2.0.0"
+googleAuthLibraryOauth2Http = "1.19.0"
 kotlin = "1.9.23"
 kotlinParcelize= "2.0.0-Beta5"
 coreKtx = "1.13.1"
@@ -28,6 +32,10 @@ activityVersion = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClientAndroid" }
+google-api-services-drive = { module = "com.google.apis:google-api-services-drive", version.ref = "googleApiServicesDrive" }
+google-api-services-sheets = { module = "com.google.apis:google-api-services-sheets", version.ref = "googleApiServicesSheets" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

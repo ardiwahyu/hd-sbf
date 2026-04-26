@@ -4,25 +4,59 @@ import com.bm.hdsbf.data.local.db.dao.ScheduleDao
 import com.bm.hdsbf.data.local.db.entities.ScheduleVo
 import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.data.remote.Resource
+import com.bm.hdsbf.data.remote.config.RemoteConfig
+import com.bm.hdsbf.data.remote.service.GoogleService
 import com.bm.hdsbf.data.repository.google.GoogleRepository
-import com.bm.hdsbf.data.repository.google.GoogleSheetScraper
 import com.bm.hdsbf.ui.setting.ShowSetting
 import com.bm.hdsbf.utils.CalendarUtil.getMonthNowAndAfter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 class ScheduleRepository @Inject constructor(
+    private val googleService: GoogleService,
     private val googleRepository: GoogleRepository,
-    private val googleSheetScraper: GoogleSheetScraper,
     private val scheduleDao: ScheduleDao,
-    private val preferenceClass: PreferenceClass
+    private val preferenceClass: PreferenceClass,
+    private val remoteConfig: RemoteConfig
 ) {
 
     private val monthNowAndAfter by lazy { getMonthNowAndAfter() }
+    private val df = SimpleDateFormat("MMMM yyyy", Locale("ID"))
+
+    private fun getMonthAvailable(): Flow<List<String>> {
+        val list = mutableListOf<String>()
+        val spreadsheetId = remoteConfig.getSpreadsheetId()
+        return flow {
+            try {
+                val service = googleService.getSheetsService()
+                val response = service.spreadsheets().get(spreadsheetId)
+                    .setFields("sheets.properties.title")
+                    .execute()
+                response.sheets?.forEach { sheet ->
+                    val tabName = sheet.properties.title
+                    try {
+                        df.parse(tabName)
+                        list.add(tabName)
+                    } catch (e: Exception) { }
+                }
+
+                emit(list)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(list)
+            }
+        }.catch {
+            it.printStackTrace()
+            emit(list)
+        }.flowOn(Dispatchers.IO)
+    }
 
     fun getAllData(): Flow<Resource<Int>> {
         return flow {
@@ -32,7 +66,7 @@ class ScheduleRepository @Inject constructor(
                 googleRepository.getLastUpdateSchedule().collect { lastUpdate = it }
                 if (lastUpdate > preferenceClass.getLastModified()) {
                     val monthAvailable = mutableListOf<String>()
-                    googleSheetScraper.getMonthAvailable().collect {
+                    getMonthAvailable().collect {
                         monthAvailable.addAll(it)
                     }
                     val monthSaved = scheduleDao.getAllMonth().toMutableList()
@@ -47,7 +81,7 @@ class ScheduleRepository @Inject constructor(
                     scheduleDao.deleteMonths(monthNowAndAfter)
 
                     monthNotSaved.forEachIndexed { index, sheetName ->
-                        emit(Resource.OnSuccess(((index.toDouble() * 100.0) / monthNotSaved.size.toDouble()).toInt()))
+                        emit(Resource.OnSuccess((((index + 1).toDouble() * 100.0) / monthNotSaved.size.toDouble()).toInt()))
                         googleRepository.getDataSheet(sheetName)
                             .collect { list -> scheduleDao.insertAll(list) }
                     }
@@ -56,7 +90,7 @@ class ScheduleRepository @Inject constructor(
                 emit(Resource.OnSuccess(100))
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage ?: ""))
             } finally {
                 emit(Resource.OnLoading(false))
             }

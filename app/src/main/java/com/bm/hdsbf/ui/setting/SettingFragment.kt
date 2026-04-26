@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.S
 import android.os.Build.VERSION_CODES.TIRAMISU
@@ -15,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListPopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -181,11 +181,11 @@ class SettingFragment : BottomSheetDialogFragment() {
             if (!alarmManager.canScheduleExactAlarms()) {
                 try {
                     val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                    intent.data = "package:${requireActivity().packageName}".toUri()
+                    intent.data = Uri.fromParts("package", requireActivity().packageName, null)
                     startActivity(intent)
                 } catch (e: Exception) {
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    intent.data = "package:${requireActivity().packageName}".toUri()
+                    intent.data = Uri.fromParts("package", requireActivity().packageName, null)
                     startActivity(intent)
                 }
             }

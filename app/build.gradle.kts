@@ -77,6 +77,17 @@ android {
         viewBinding = true
         buildConfig = true
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/DEPENDENCIES"
+            excludes += "/META-INF/LICENSE"
+            excludes += "/META-INF/LICENSE.txt"
+            excludes += "/META-INF/NOTICE"
+            excludes += "/META-INF/NOTICE.txt"
+            excludes += "/META-INF/*.kotlin_module"
+            pickFirsts += "META-INF/DEPENDENCIES"
+        }
+    }
 }
 
 dependencies {
@@ -118,6 +129,11 @@ dependencies {
     implementation(platform(libs.firebase.boom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)
+
+    implementation(libs.google.api.client.android)
+    implementation(libs.google.api.services.drive)
+    implementation(libs.google.api.services.sheets)
+    implementation(libs.google.auth.library.oauth2.http)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
