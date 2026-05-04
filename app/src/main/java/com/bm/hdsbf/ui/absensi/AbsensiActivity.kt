@@ -2,48 +2,35 @@ package com.bm.hdsbf.ui.absensi
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.bm.hdsbf.R
-import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.data.remote.model.LokasiAbsensi
 import com.bm.hdsbf.databinding.ActivityAbsensiBinding
-import com.bm.hdsbf.utils.ViewUtil
+import com.bm.hdsbf.ui.BaseActivity
 import com.bm.hdsbf.utils.ViewUtil.dialogError
+import com.bm.hdsbf.utils.ViewUtil.dialogLoading
 import com.bm.hdsbf.utils.ViewUtil.setGone
 import com.bm.hdsbf.utils.ViewUtil.setInvisible
 import com.bm.hdsbf.utils.ViewUtil.setVisible
 import com.bm.hdsbf.utils.ViewUtil.showLongToast
 import com.bm.hdsbf.utils.ViewUtil.showShortToast
+import com.bm.hdsbf.utils.viewBinding
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
 @AndroidEntryPoint
-class AbsensiActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityAbsensiBinding
+class AbsensiActivity : BaseActivity() {
+    private val binding by viewBinding(ActivityAbsensiBinding::inflate)
     private val viewModel by viewModels<AbsensiViewModel>()
-    private val dialogLoading by lazy { ViewUtil.dialogLoading(this) }
+    private val dialogLoading by lazy { dialogLoading(this) }
 
-    @Inject lateinit var preferenceClass: PreferenceClass
     private var location: LokasiAbsensi.Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityAbsensiBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         initView()
         iniObservers()

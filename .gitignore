@@ -11,3 +11,5 @@ local.properties
 secret.properties
 keystore.jks
 app/release
+app/superapp
+app/normal

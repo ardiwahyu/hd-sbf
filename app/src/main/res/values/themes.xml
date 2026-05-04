@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.HDSBF" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.HDSBF" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
@@ -8,6 +8,11 @@
         <item name="android:colorForeground">@color/gray600</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textColor">@color/black</item>
+
+        <!-- Warna hint untuk EditText (abu-abu muda) -->
+        <item name="android:textColorHint">@color/gray</item>
+        <!-- Untuk komponen Material3 (seperti label/hint TextInputLayout) -->
+        <item name="colorOnSurfaceVariant">@color/gray</item>
     </style>
 
     <style name="Theme.HDSBF" parent="Base.Theme.HDSBF" />
@@ -30,6 +35,14 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowAnimationStyle">@style/MaterialDialogSheetAnimation</item>
+    </style>
+
+    <style name="CustomDatePickerLight" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/black</item>
+        <!-- Mengubah warna teks bulan/tahun agar lebih terang (hitam) -->
+        <item name="colorOnSurfaceVariant">@color/black</item>
     </style>
 
     <style name="MaterialDialogSheetAnimation">

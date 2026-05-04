@@ -1,9 +1,16 @@
 package com.bm.hdsbf.utils
 
+import androidx.appcompat.app.AppCompatActivity
+import com.bm.hdsbf.R
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.kizitonwose.calendar.core.yearMonth
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -38,5 +45,30 @@ object CalendarUtil {
         listMonth.add(dateNow.yearMonth.displayName())
         listMonth.add(dateNow.plusMonths(1).yearMonth.displayName())
         return listMonth
+    }
+
+    fun AppCompatActivity.showDatePicker(onSelect: ((LocalDate) -> Unit)) {
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointForward.from(today))
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Pilih Tanggal")
+            .setTheme(R.style.CustomDatePickerLight)
+            .setSelection(today)
+            .setCalendarConstraints(constraintsBuilder.build())
+            .build()
+        datePicker.show(supportFragmentManager, null)
+        datePicker.addOnPositiveButtonClickListener {
+            val selectedDate = Instant
+                .ofEpochMilli(it)
+                .atZone(ZoneId.of("Asia/Jakarta"))
+                .toLocalDate()
+            onSelect.invoke(selectedDate)
+        }
+    }
+
+    fun LocalDate.formatLocalDate(): String {
+        val formatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale("id", "ID"))
+        return format(formatter)
     }
 }

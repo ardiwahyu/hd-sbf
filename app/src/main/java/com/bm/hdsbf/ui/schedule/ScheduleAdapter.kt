@@ -17,6 +17,9 @@ import javax.inject.Inject
 
 class ScheduleAdapter @Inject constructor() : ListAdapter<ScheduleVo, ScheduleAdapter.ViewHolder>(diffUtils){
 
+    var enableClick = false
+    var onClick: ((ScheduleVo) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemListScheduleBinding.inflate(LayoutInflater.from(parent.context))
         return ViewHolder(binding)
@@ -41,6 +44,11 @@ class ScheduleAdapter @Inject constructor() : ListAdapter<ScheduleVo, ScheduleAd
                     "HD3" -> holder.binding.tvType.background = ContextCompat.getDrawable(context, R.color.hd3)
                 }
                 holder.binding.tvSubName.setGone()
+            }
+            holder.binding.root.setOnClickListener {
+                if (enableClick) {
+                    onClick?.invoke(item)
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -12,5 +12,7 @@ class ScheduleVo (
     val month: String,
     val date: Int,
     val name: String,
-    val type: String
+    val type: String,
+    val row: String,
+    val column: String
 ): Parcelable

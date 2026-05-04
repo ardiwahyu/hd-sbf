@@ -3,21 +3,17 @@ package com.bm.hdsbf.ui.main
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.bm.hdsbf.data.local.sp.PreferenceClass
-import com.bm.hdsbf.data.remote.config.RemoteConfig
 import com.bm.hdsbf.databinding.ActivityMainBinding
+import com.bm.hdsbf.ui.BaseActivity
 import com.bm.hdsbf.ui.schedule.ScheduleActivity
 import com.bm.hdsbf.ui.update.UpdateFragment
 import com.bm.hdsbf.utils.ViewUtil.dialogError
 import com.bm.hdsbf.utils.ViewUtil.setGone
 import com.bm.hdsbf.utils.ViewUtil.setVisible
+import com.bm.hdsbf.utils.viewBinding
 import com.google.firebase.remoteconfig.ConfigUpdate
 import com.google.firebase.remoteconfig.ConfigUpdateListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -26,28 +22,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class MainActivity : BaseActivity() {
+    private val binding by viewBinding(ActivityMainBinding::inflate)
     private val viewModel by viewModels<MainViewModel>()
     private val updateDialog by lazy { UpdateFragment() }
-    @Inject lateinit var remoteConfig: RemoteConfig
-    @Inject lateinit var preferenceClass: PreferenceClass
     private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
         firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener {

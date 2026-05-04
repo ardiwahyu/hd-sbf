@@ -24,6 +24,7 @@ import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.databinding.FragmentSettingBottomSheetBinding
 import com.bm.hdsbf.ui.absensi.AbsensiActivity
 import com.bm.hdsbf.ui.schedule.ScheduleViewModel
+import com.bm.hdsbf.ui.shiftswap.ShiftSwapActivity
 import com.bm.hdsbf.utils.CalendarUtil.displayName
 import com.bm.hdsbf.utils.ViewUtil.dialogConfirm
 import com.bm.hdsbf.utils.ViewUtil.setGone
@@ -152,6 +153,10 @@ class SettingFragment : BottomSheetDialogFragment() {
         }
         binding.llcAbsensi.setOnClickListener {
             startActivity(Intent(requireContext(), AbsensiActivity::class.java))
+            dialog?.dismiss()
+        }
+        binding.clSwipe.setOnClickListener {
+            startActivity(Intent(requireContext(), ShiftSwapActivity::class.java))
             dialog?.dismiss()
         }
 

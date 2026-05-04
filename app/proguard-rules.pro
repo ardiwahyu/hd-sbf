@@ -22,7 +22,6 @@
 
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
--keep public class com.bm.hdsbf.** { *; }
 
 -keep class * implements com.google.gson.TypeAdapterFactory
 -keep class * implements com.google.gson.JsonSerializer
@@ -39,3 +38,7 @@
 -keepclassmembers class * implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator *;
 }
+
+-dontwarn com.google.android.gms.auth.GoogleAuthException
+-dontwarn com.google.android.gms.auth.GooglePlayServicesAvailabilityException
+-dontwarn com.google.android.gms.auth.UserRecoverableAuthException

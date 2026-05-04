@@ -62,6 +62,11 @@ class ScheduleRepository @Inject constructor(
         return flow {
             emit(Resource.OnLoading(true))
             try {
+                val monthSaved = scheduleDao.getAllMonth().toMutableList()
+                if (monthSaved.isEmpty()) { // cek jika baru update, dan database baru
+                    preferenceClass.setLastModified(0)
+                }
+
                 var lastUpdate: Long = 0
                 googleRepository.getLastUpdateSchedule().collect { lastUpdate = it }
                 if (lastUpdate > preferenceClass.getLastModified()) {
@@ -69,7 +74,6 @@ class ScheduleRepository @Inject constructor(
                     getMonthAvailable().collect {
                         monthAvailable.addAll(it)
                     }
-                    val monthSaved = scheduleDao.getAllMonth().toMutableList()
 
                     val monthNotSaved = mutableSetOf<String>()
                     monthAvailable.forEach {
@@ -118,7 +122,7 @@ class ScheduleRepository @Inject constructor(
                 emit(Resource.OnSuccess(hashMapMonth))
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage ?: ""))
             } finally {
                 emit(Resource.OnLoading(false))
             }
@@ -133,7 +137,7 @@ class ScheduleRepository @Inject constructor(
                 emit(Resource.OnSuccess(dataSchedule))
             } catch (e: Exception) {
                 e.printStackTrace()
-                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage ?: ""))
             } finally {
                 emit(Resource.OnLoading(false))
             }
@@ -147,7 +151,7 @@ class ScheduleRepository @Inject constructor(
                 val dataName = scheduleDao.getName(month)
                 emit(Resource.OnSuccess(dataName))
             } catch (e: Exception) {
-                emit(Resource.OnError(e.localizedMessage?.toString() ?: ""))
+                emit(Resource.OnError(e.localizedMessage ?: ""))
             } finally {
                 emit(Resource.OnLoading(false))
             }

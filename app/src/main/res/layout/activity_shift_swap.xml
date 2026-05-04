@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.shiftswap.ShiftSwapActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:padding="20dp"
+            android:src="@drawable/baseline_arrow_back"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_semi_bold"
+            android:text="Tukar Jadwal HD"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_back"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semi_bold"
+                android:text="Pilih jadwalmu:" />
+
+            <TextView
+                android:id="@+id/et_my_tgl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Masukkan Tanggal HD"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="14sp"
+                android:padding="14dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_my_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:listitem="@layout/item_list_schedule"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="3"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/nunito_semi_bold"
+                android:text="Tukar dengan:" />
+
+            <TextView
+                android:id="@+id/et_your_tgl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_edittext"
+                android:hint="Masukkan Tanggal HD"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="14sp"
+                android:padding="14dp"/>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llc_schedule_available"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_semi_bold"
+                    android:text="Pilih jadwal yang ingin ditukar:" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_your_schedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    tools:listitem="@layout/item_list_schedule"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tukar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tukar Jadwal"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/nunito_semi_bold"
+                app:backgroundTint="@color/colorPrimary"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

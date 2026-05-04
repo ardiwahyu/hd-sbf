@@ -32,8 +32,8 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 6
-        versionName = "3.0"
-        setProperty("archivesBaseName", "HDSBF-v$versionName-$versionCode")
+        versionName = "4.0"
+        setProperty("archivesBaseName", "HDSBF-v$versionName-c$versionCode")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "BASE_URL_SPREADSHEET", secretProperties["BASE_URL_SPREADSHEET"].toString())

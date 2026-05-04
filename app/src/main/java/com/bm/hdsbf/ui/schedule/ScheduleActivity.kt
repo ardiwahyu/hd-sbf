@@ -13,17 +13,13 @@ import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.bm.hdsbf.R
-import com.bm.hdsbf.data.local.sp.PreferenceClass
 import com.bm.hdsbf.databinding.ActivityScheduleBinding
 import com.bm.hdsbf.databinding.CalendarDayLayoutBinding
+import com.bm.hdsbf.ui.BaseActivity
 import com.bm.hdsbf.ui.setting.SettingFragment
 import com.bm.hdsbf.utils.CalendarUtil.daysOfWeek
 import com.bm.hdsbf.utils.CalendarUtil.displayName
@@ -33,6 +29,7 @@ import com.bm.hdsbf.utils.ViewUtil.setInvisible
 import com.bm.hdsbf.utils.ViewUtil.setVisible
 import com.bm.hdsbf.utils.ViewUtil.showShortToast
 import com.bm.hdsbf.utils.scheduler.ReminderScheduler
+import com.bm.hdsbf.utils.viewBinding
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -49,11 +46,10 @@ import java.time.YearMonth
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ScheduleActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityScheduleBinding
+class ScheduleActivity : BaseActivity() {
+    private val binding by viewBinding(ActivityScheduleBinding::inflate)
     private val viewModel: ScheduleViewModel by viewModels()
     @Inject lateinit var scheduleAdapter: ScheduleAdapter
-    @Inject lateinit var preferenceClass: PreferenceClass
     @Inject lateinit var scheduler: ReminderScheduler
     private val today by lazy { LocalDate.now() }
     private var selectedDate: LocalDate? = null
@@ -69,14 +65,7 @@ class ScheduleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityScheduleBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         preferenceClass.setIsFirst(false)
 
